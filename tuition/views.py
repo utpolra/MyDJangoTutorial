@@ -43,7 +43,7 @@ def contact(request):
 from django.views.generic import ListView
 class PostListView(ListView):
     template_name='tuition/postlist.html'
-    queryset=Post.objects.filter(user=2)
+    queryset=Post.objects.all()
     context_object_name='posts'
     def get_context_data(self,*args, **kwargs):
         context=super().get_context_data(*args, **kwargs)
@@ -81,7 +81,14 @@ class PostCreateView(CreateView):
     def get_success_url(self):
         # id= self.object.id
         return reverse_lazy('tuition:subjects')
-
+from django.views.generic import UpdateView
+class PostEditView(UpdateView):
+    model=Post
+    form_class=PostForm
+    template_name='tuition/postcreate.html'
+    def get_success_url(self):
+        id= self.object.id
+        return reverse_lazy('tuition:postdetail', kwargs={'pk':id})
 def postcreate(request):
     if request.method=="POST":
         form=PostForm(request.POST,request.FILES )
