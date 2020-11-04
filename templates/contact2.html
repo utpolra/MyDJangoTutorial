@@ -1,0 +1,14 @@
+{% extends 'basic.html' %}
+{% block body %}
+{% load crispy_forms_tags %}
+<H1>COntact Please Again</H1>
+
+<div class="container">
+<form method="post">
+{% csrf_token %}
+  {{form | crispy}}
+  <button type="SUbmit"> Submit</button>
+</form>
+
+</div>
+{% endblock body %}
