@@ -11,6 +11,7 @@ Title={{object.title}} <br>
 
 {% if request.user == object.user %}
 <a href="/tuition/edit/{{object.id}}/"> Edit</a> <br>
+<a href="/tuition/delete/{{object.id}}/">Delete</a> <br>
 {% endif %}
 
 Subject= {% for s in object.subject.all %}

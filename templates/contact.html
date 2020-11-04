@@ -9,7 +9,8 @@
 <div class="container">
 <form method="post">
 {% csrf_token %}
-  {{form | crispy}}
+{{form|crispy}}
+
   <button type="SUbmit"> Submit</button>
 </form>
 

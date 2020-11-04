@@ -33,12 +33,17 @@ class ContactView(FormView):
 
 # Create your views here.
 def contact(request):
+    initials={
+        'name':'My Name is ',
+        'phone':'+8801',
+        'content': 'My problem is'
+    }
     if request.method=="POST":
-        form=ContactForm(request.POST)
+        form=ContactForm(request.POST, initial=initials)
         if form.is_valid():
             form.save()
     else:
-        form=ContactForm()
+        form=ContactForm(initial=initials)
     return render(request,'contact.html',{'form':form})
 from django.views.generic import ListView
 class PostListView(ListView):
@@ -81,7 +86,7 @@ class PostCreateView(CreateView):
     def get_success_url(self):
         # id= self.object.id
         return reverse_lazy('tuition:subjects')
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, DeleteView
 class PostEditView(UpdateView):
     model=Post
     form_class=PostForm
@@ -89,6 +94,10 @@ class PostEditView(UpdateView):
     def get_success_url(self):
         id= self.object.id
         return reverse_lazy('tuition:postdetail', kwargs={'pk':id})
+class PostDeleteView(DeleteView):
+    model=Post
+    template_name="tuition/delete.html"
+    success_url=reverse_lazy('tuition:postlist')
 def postcreate(request):
     if request.method=="POST":
         form=PostForm(request.POST,request.FILES )
