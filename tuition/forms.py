@@ -19,7 +19,7 @@ class ContactForm(forms.ModelForm):
         if len(num_of_w) > 3:
             self.add_error('name', 'Name can have maximun of 3 words')
         else:
-            value
+            return value
         # widgets={
         #     'name':forms.TextInput(attrs={'class':'form-control','placeholder':'Enter Your Name'}),
         #     'phone':forms.TextInput(attrs={'class':'form-control','placeholder':'Enter Your Phone'}),

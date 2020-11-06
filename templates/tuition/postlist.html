@@ -1,21 +1,68 @@
 {% extends 'basic.html' %}
- {% block body %}
- <div class="container">
-<h1 class="text-center">All Posts Are given below:</h1>
- {% for p in posts %}
- <div class="col-md-6 offset-md-2 mb-3 p-3 border">
- {{p.title}} <br>
- by {{p.user.username}}  <br>
- <hr>
+{% block body %}
+<div class="container">
+  <div class="col-md-6">
+    <h1>Filter Data</h1>
+    <form action="/tuition/filter/" method="post">
+      {% csrf_token %}
 
- 
- Details: {{p.details}}
- <a href="/tuition/postdetail/{{p.id}}">...Read More</a> 
+      <div class="input-group mb-3">
+        <select class="custom-select" id="inputGroupSelect02" name='subject'>
+          <option></option>
+          {% for i in subjects %}
+          <option value="{{i}}">{{i}}</option>
+          {% endfor %}
 
- </div>
-  
- 
+        </select>
+        <div class="input-group-append">
+          <label class="input-group-text" for="inputGroupSelect02">Subjects</label>
+        </div>
+        <div class="input-group mb-3">
+          <select class="custom-select" id="inputGroupSelect02" name='class_in'>
+            <option></option>
+            {% for i in classes %}
+            <option value="{{i}}">{{i}}</option>
+            {% endfor %}
 
-{% endfor %}
- </div>
- {% endblock body %}
+          </select>
+          <div class="input-group-append">
+            <label class="input-group-text" for="inputGroupSelect02">Class</label>
+          </div>
+        </div>
+      </div>
+        <div class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1" name="available">
+          <label class="form-check-label" for="exampleCheck1">Only Available</label>
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlInput1">Salary From</label>
+          <input type="number" class="form-control" name="salary_from" id="exampleFormControlInput1">
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlInput1">Salary to</label>
+          <input type="number" class="form-control" name="salary_to" id="exampleFormControlInput1">
+        </div>
+      
+
+
+      <button type="submit">Filter Posts</button>
+    </form>
+  </div>
+  <h1 class="text-center">All Posts Are given below:</h1>
+  {% for p in posts %}
+  <div class="col-md-6 offset-md-2 mb-3 p-3 border">
+    {{p.title}} <br>
+    by {{p.user.username}} <br>
+    <hr>
+
+
+    Details: {{p.details}}
+    <a href="/tuition/postdetail/{{p.id}}">...Read More</a>
+
+  </div>
+
+
+
+  {% endfor %}
+</div>
+{% endblock body %}

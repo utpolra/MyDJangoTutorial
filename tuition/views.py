@@ -1,18 +1,64 @@
+from django.db.models import query
 from django.http import request
 from django.http.response import HttpResponse
 from django.shortcuts import render
-from .models import Contact,Post,Subject
+from .models import Class_in, Contact,Post,Subject
 from .forms import ContactForm, PostForm
 from django.views import View
 from django.views.generic import FormView
 from django.urls import reverse_lazy
+from django.contrib import messages
+from django.db.models import Q
+def search(request):
+    query=request.POST.get('search','')
+    if query:
+        queryset=(Q(title__icontains=query)) | (Q(details__icontains=query)) | (Q(medium__icontains=query)) | (Q(category__icontains=query)) | (Q(subject__name__icontains=query)) | (Q(class_in__name__icontains=query))
+        results= Post.objects.filter(queryset).distinct()
+    else:
+        results=[]
+    context ={
+        'results':results
+    }
+    return render(request, 'tuition/search.html',context)
+def filter(request):
+    print("filter")
+    if request.method=="POST":
+        subject=request.POST['subject']
+        class_in=request.POST['class_in']
+        salary_from=request.POST['salary_from']
+        salary_to=request.POST['salary_to']
+        available=request.POST['available']
+        print(subject, class_in)
+        if subject or class_in:
+            queryset=(Q(subject__name__icontains=subject)) & (Q(class_in__name__icontains=class_in)) 
+            results= Post.objects.filter(queryset).distinct()
+            if available:
+                results=results.filter(available=True)
+            if salary_from:
+                results=results.filter(salary__gte=salary_from)
+            if salary_to:
+                results=results.filter(salary__lte=salary_to)
+
+        else:
+            results=[]
+        
+        context ={
+        'results':results
+        }
+        return render(request, 'tuition/search.html',context)
+
+
+
+
 class ContactView(FormView):
     form_class=ContactForm
     template_name='contact.html'
     # success_url='/'
     def form_valid(self, form):
         form.save()
+        messages.info(self.request, 'Form successfully submitted!')
         return super().form_valid(form)
+
     def form_invalid(self, form):
         
         return super().form_invalid(form)
@@ -53,7 +99,8 @@ class PostListView(ListView):
     def get_context_data(self,*args, **kwargs):
         context=super().get_context_data(*args, **kwargs)
         context['posts']= context.get('object_list')
-        context['msg']= 'THis is post list'
+        context['subjects']= Subject.objects.all()
+        context['classes']= Class_in.objects.all()
         return context
 
 from django.views.generic import DetailView

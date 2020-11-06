@@ -1,6 +1,6 @@
 {% extends 'basic.html' %}
 {% block body %}
-
+{% load humanize %}
 <div class="container">
 <h1 class="text-center"> Post Detail</h1>
 <div class="col-md-6">
@@ -8,6 +8,7 @@
 </div>
 <div class="col-md-8 offset-md-2">
 Title={{object.title}} <br>
+br: {{object.user.username}} at: {{object.created_at| naturaltime}} <br>
 
 {% if request.user == object.user %}
 <a href="/tuition/edit/{{object.id}}/"> Edit</a> <br>
