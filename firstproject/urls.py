@@ -11,4 +11,5 @@ urlpatterns = [
     path('',HomeView.as_view(), name="homeview"),
     # path('',TemplateView.as_view(template_name='home.html'), name="homeview"),
     path('tuition/',include('tuition.urls')),
+    path('session/',include('session.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

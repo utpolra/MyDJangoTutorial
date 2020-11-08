@@ -1,6 +1,6 @@
-from django.urls import path
 from .views import search,filter,contact,postview,postcreate,PostDeleteView, subview,ContactView,PostEditView,PostCreateView,PostListView,PostDetailView
 from .forms import ContactFormtwo
+from django.urls import path
 app_name='tuition'
 urlpatterns = [
     # path('contact/',contact,name="contact"),
