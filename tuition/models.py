@@ -13,11 +13,14 @@ class Contact(models.Model):
     def __str__(self):
         return self.name
 
-
 class Subject(models.Model):
     name=models.CharField(max_length=100)
     def __str__(self):
         return self.name
+    def get_total_post(self):
+        return self.subject_set.all().count()
+    def get_post_list(self):
+        return self.subject_set.all()
 class Class_in(models.Model):
     name=models.CharField(max_length=100)
     def __str__(self):
@@ -59,6 +62,27 @@ class Post(models.Model):
             img.save(self.image.path)
     def __str__(self):
         return self.title + " by : " + self.user.username
-    
-
-
+    def get_subject_list(self):
+        sub=self.subject.all()
+        subjects=""
+        for s in sub:
+            subjects=subjects +  str(s.name) + ","
+        return subjects
+    def get_class_list(self):
+        sub=self.class_in.all()
+        subjects=""
+        for s in sub:
+            subjects=subjects +  str(s.name) + ","
+        return subjects
+    def ProperCase(self):
+        return self.title.title()
+    def uppercase(self):
+        return self.title.upper()
+    def lowercase(self):
+        return self.title.lower()
+    def details_short(self):
+        details_words=self.details.split(' ')
+        if len(details_words) >10:
+            return ' '.join(details_words[:10])+ "...."
+        else:
+            return self.details

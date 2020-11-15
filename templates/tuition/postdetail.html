@@ -3,30 +3,31 @@
 {% load humanize %}
 <div class="container">
 <h1 class="text-center"> Post Detail</h1>
+<div class="row">
+
 <div class="col-md-6">
 <img src="{{object.image.url}}" alt="" style="width:300px; height:300px;" class="rounded-circle img-thumbnail">
 </div>
-<div class="col-md-8 offset-md-2">
-Title={{object.title}} <br>
-br: {{object.user.username}} at: {{object.created_at| naturaltime}} <br>
+<div class="col-md-6 my-5 py-5">
+Title={{object.lowercase}} <br> 
+by: {{object.user.username}} at: {{object.created_at| naturaltime}} <br>
 
 {% if request.user == object.user %}
 <a href="/tuition/edit/{{object.id}}/"> Edit</a> <br>
 <a href="/tuition/delete/{{object.id}}/">Delete</a> <br>
 {% endif %}
 
-Subject= {% for s in object.subject.all %}
-{{s.name}} ,
-{% endfor %} <br>
-Class= {% for s in object.class_in.all %}
-{{s.name}} ,
-{% endfor %} <br>
+
+
+Subject= {{object.get_subject_list}} <br>
+Class= {{object.get_class_list}} <br>
 category={{object.category}} <br>
-Salart={{object.salary}} <br>
+Salary={{object.salary}} <br>
 Medium={{object.medium}} <br>
 Created_at={{object.created_at}} <br>
 Available= {% if object.available %} Yes {% else %} No{% endif %} <br>
 <p>Details: {{object.details}}</p>
+</div>
 </div>
 </div>
 {% endblock %}
