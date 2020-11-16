@@ -56,6 +56,12 @@ class Post(models.Model):
     medium=MultiSelectField(max_length=100, max_choices=5, choices=MEDIUM, default='bangla')
     subject=models.ManyToManyField(Subject, related_name='subject_set')
     class_in=models.ManyToManyField(Class_in, related_name='class_set')
+    likes=models.ManyToManyField(User, related_name='post_likes')
+    views=models.ManyToManyField(User, related_name='post_views')
+    def total_likes(self):
+        return self.likes.count()
+    def total_views(self):
+        return self.views.count()
     def save(self, *args, **kwargs):
         self.slug=slugify(self.title)
         super(Post, self).save(*args, **kwargs)
@@ -90,5 +96,35 @@ class Post(models.Model):
             return ' '.join(details_words[:10])+ "...."
         else:
             return self.details
+    
     objects=models.Manager()
     items=PostManager()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# class Comment(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+#     text = models.TextField()
+#     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+#     created_at = models.DateTimeField(default=now)
+#     def __str__(self):
+#         return self.user.username + ": " + self.comment[0:13]

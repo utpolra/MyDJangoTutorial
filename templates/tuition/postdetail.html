@@ -1,33 +1,49 @@
-{% extends 'basic.html' %}
-{% block body %}
-{% load humanize %}
+{% extends 'basic.html' %} {% block body %} {% load humanize %}
 <div class="container">
-<h1 class="text-center"> Post Detail</h1>
-<div class="row">
+  <h1 class="text-center">Post Detail</h1>
+  <div class="row">
+    <div class="col-md-6">
+      <img
+        src="{{object.image.url}}"
+        alt=""
+        style="width: 300px; height: 300px"
+        class="rounded-circle img-thumbnail"
+      />
+    </div>
+    <div class="col-md-6 my-5 py-5">
+      Title={{object.lowercase}} <br />
+      by: {{object.user.username}} at: {{object.created_at| naturaltime}} <br />
 
-<div class="col-md-6">
-<img src="{{object.image.url}}" alt="" style="width:300px; height:300px;" class="rounded-circle img-thumbnail">
-</div>
-<div class="col-md-6 my-5 py-5">
-Title={{object.lowercase}} <br> 
-by: {{object.user.username}} at: {{object.created_at| naturaltime}} <br>
+      {% if request.user == object.user %}
+      <a href="/tuition/edit/{{object.id}}/"> Edit</a> <br />
+      <a href="/tuition/delete/{{object.id}}/">Delete</a> <br />
+      {% endif %} Subject= {{object.get_subject_list}} <br />
+      Class= {{object.get_class_list}} <br />
+      category={{object.category}} <br />
+      Salary={{object.salary}} <br />
+      Medium={{object.medium}} <br />
+      Created_at={{object.created_at}} <br />
+      Available= {% if object.available %} Yes {% else %} No{% endif %} <br />
+      <p>Details: {{object.details}}</p>
+    </div>
+    <div>
+    {{object.total_views}} Peoples Seen this Post <br>
+    {{object.total_likes}} Peoples Liked this Post
+    </div>
+    <div>
+    <form action="/tuition/likepost/{{object.id}}/" method="post">
+    {% csrf_token %}
 
-{% if request.user == object.user %}
-<a href="/tuition/edit/{{object.id}}/"> Edit</a> <br>
-<a href="/tuition/delete/{{object.id}}/">Delete</a> <br>
-{% endif %}
+    {% if liked %}
+  <button type="submit" class="btn btn-warning">Unlike</button>
 
-
-
-Subject= {{object.get_subject_list}} <br>
-Class= {{object.get_class_list}} <br>
-category={{object.category}} <br>
-Salary={{object.salary}} <br>
-Medium={{object.medium}} <br>
-Created_at={{object.created_at}} <br>
-Available= {% if object.available %} Yes {% else %} No{% endif %} <br>
-<p>Details: {{object.details}}</p>
-</div>
-</div>
+    {% else %}
+  <button type="submit" class="btn btn-primary">Like</button>
+    
+    {% endif %}
+    </form>
+    </div>
+    
+  </div>
 </div>
 {% endblock %}

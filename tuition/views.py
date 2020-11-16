@@ -1,7 +1,7 @@
 from django.db.models import query
 from django.http import request
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .models import Class_in, Contact,Post,Subject
 from .forms import ContactForm, PostForm
 from django.views import View
@@ -108,9 +108,13 @@ class PostDetailView(DetailView):
     model=Post
     template_name='tuition/postdetail.html'
     def get_context_data(self,*args, **kwargs):
+        self.object.views.add(self.request.user)
+        liked=False
+        if self.object.likes.filter(id=self.request.user.id).exists():
+            liked=True
         context=super().get_context_data(*args, **kwargs)
         context['post']= context.get('object')
-        context['msg']= 'THis is post list'
+        context['liked']= liked
         return context
 
 
@@ -164,16 +168,25 @@ def postcreate(request):
     else:
         form=PostForm()
     return render(request, 'tuition/postcreate.html',{'form':form})
+from django.http import HttpResponseRedirect
+def likepost(request,id):
+    if request.method=="POST":
+        post=Post.objects.get(id=id)
+        if post.likes.filter(id=request.user.id).exists():
+            post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-import requests
-import json
-def postview(request):
-    api_request= requests.get(f"https://jsonplaceholder.typicode.com/posts")
-    try:
-        api=json.loads(api_request.content)
-    except:
-        api="Error"
-    return render(request,'tuition/postlistapi.html',{'api':api})
+# import requests
+# import json
+# def postview(request):
+#     api_request= requests.get(f"https://jsonplaceholder.typicode.com/posts")
+#     try:
+#         api=json.loads(api_request.content)
+#     except:
+#         api="Error"
+#     return render(request,'tuition/postlistapi.html',{'api':api})
 
 
 

@@ -1,4 +1,4 @@
-from .views import postview,search,filter,contact,postview,postcreate,PostDeleteView, subview,ContactView,PostEditView,PostCreateView,PostListView,PostDetailView
+from .views import likepost,search,filter,contact,postview,postcreate,PostDeleteView, subview,ContactView,PostEditView,PostCreateView,PostListView,PostDetailView
 from .forms import ContactFormtwo
 from django.urls import path
 app_name='tuition'
@@ -6,7 +6,8 @@ urlpatterns = [
     # path('contact/',contact,name="contact"),
     path('search/',search,name="search"),
     path('filter/',filter,name="filter"),
-    path('postview/',postview,name="postview"),
+    path('likepost/<int:id>/',likepost,name="likepost"),
+    # path('postview/',postview,name="postview"),
     path('contact/',ContactView.as_view(),name="contact"),
     # path('contact2/',ContactView.as_view(form_class=ContactFormtwo, template_name="contact2.html"),name="contact2"),
     path('posts/',postview,name="posts"),
