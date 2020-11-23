@@ -29,6 +29,10 @@ class Class_in(models.Model):
     name=models.CharField(max_length=100)
     def __str__(self):
         return self.name
+class District(models.Model):
+    name=models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
 
 class Post(models.Model):
     CATEGORY=(
@@ -56,6 +60,7 @@ class Post(models.Model):
     medium=MultiSelectField(max_length=100, max_choices=5, choices=MEDIUM, default='bangla')
     subject=models.ManyToManyField(Subject, related_name='subject_set')
     class_in=models.ManyToManyField(Class_in, related_name='class_set')
+    district=models.CharField(max_length=100, null=True, blank=True)
     likes=models.ManyToManyField(User, related_name='post_likes')
     views=models.ManyToManyField(User, related_name='post_views')
     def total_likes(self):
@@ -99,6 +104,29 @@ class Post(models.Model):
     
     objects=models.Manager()
     items=PostManager()
+class PostFile(models.Model):
+    image = models.ImageField(upload_to="tuition/images")
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name='images')
+    def save( self, *args, **kwargs):
+        super(PostFile, self).save(*args, **kwargs)
+        img = Image.open(self.image.path)
+        if img.height > 300 or img.width > 300 :
+            output_size =(300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
+
+
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    text = models.TextField()
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(default=now)
+    def __str__(self):
+        return self.user.username + ": " + self.text[0:15]
 
 
 
@@ -115,16 +143,3 @@ class Post(models.Model):
 
 
 
-
-
-
-
-
-# class Comment(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-#     text = models.TextField()
-#     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
-#     created_at = models.DateTimeField(default=now)
-#     def __str__(self):
-#         return self.user.username + ": " + self.comment[0:13]

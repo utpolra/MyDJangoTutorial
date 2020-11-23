@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Contact,Post,Subject,Class_in
+from .models import Contact,Post,Subject,Class_in,Comment,PostFile
 from django.utils.html import format_html
 
 
@@ -8,7 +8,10 @@ from django.utils import timezone
 admin.site.site_header = 'TuitionBD Admin Panel'
 admin.site.site_title = 'TuitionBD Admin Panel'
 admin.site.index_title = ''
-
+class CommentInline(admin.TabularInline):
+    model=Comment
+class PostFileInline(admin.TabularInline):
+    model=PostFile
 class PostAdmin(admin.ModelAdmin):
     # fields = ('user', 'title')
     exclude = ('user', 'title')
@@ -20,6 +23,10 @@ class PostAdmin(admin.ModelAdmin):
     list_editable = ('salary',)
     list_display_links = ('title',)
     actions = ('change_salary_3000',)
+    inlines=[
+        CommentInline,
+        PostFileInline,
+    ]
 
     def title_html_display(self, obj):
         return format_html(
@@ -44,11 +51,14 @@ class PostAdmin(admin.ModelAdmin):
         self.message_user(request, '{} posts updated'.format(count))
     change_salary_3000.short_description='Change Salary'
     
-
+from .models import District
 # Register your models here.
 admin.site.register(Contact)
 admin.site.register(Post,PostAdmin)
 admin.site.register(Subject)
 admin.site.register(Class_in)
+admin.site.register(Comment)
+admin.site.register(PostFile)
+admin.site.register(District)
 
 

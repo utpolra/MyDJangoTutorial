@@ -2,13 +2,15 @@ from django.db.models import query
 from django.http import request
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
-from .models import Class_in, Contact,Post,Subject
+from .models import Class_in, Contact, District,Post,Subject
+from .models import Comment
 from .forms import ContactForm, PostForm
 from django.views import View
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import Q
+from .templatetags import tag
 def search(request):
     query=request.POST.get('search','')
     if query:
@@ -109,12 +111,25 @@ class PostDetailView(DetailView):
     template_name='tuition/postdetail.html'
     def get_context_data(self,*args, **kwargs):
         self.object.views.add(self.request.user)
+        
         liked=False
         if self.object.likes.filter(id=self.request.user.id).exists():
             liked=True
         context=super().get_context_data(*args, **kwargs)
+        post=context.get('object')
+        comments=Comment.objects.filter(post=post.id, parent=None)
+        replies=Comment.objects.filter(post=post.id).exclude(parent=None)
+        DictofReply={}
+        for reply in replies:
+            if reply.parent.id not in DictofReply.keys():
+                DictofReply[reply.parent.id]=[reply]
+            else:
+                DictofReply[reply.parent.id].append(reply)
+        
         context['post']= context.get('object')
         context['liked']= liked
+        context['comments']= comments
+        context['DictofReply']= DictofReply
         return context
 
 
@@ -156,6 +171,10 @@ def postcreate(request):
             obj=form.save(commit=False)
             obj.user=request.user
             obj.save()
+            dis=form.cleaned_data['district']
+            if not District.objects.filter(name=dis).exists():
+                disobj=District(name=dis)
+                disobj.save()
             sub=form.cleaned_data['subject']
             for i in sub:
                 obj.subject.add(i)
@@ -166,7 +185,7 @@ def postcreate(request):
                 obj.save()
             return HttpResponse("Success")
     else:
-        form=PostForm()
+        form=PostForm(district_set=District.objects.all().order_by('name'))
     return render(request, 'tuition/postcreate.html',{'form':form})
 from django.http import HttpResponseRedirect
 def likepost(request,id):
@@ -178,20 +197,36 @@ def likepost(request,id):
             post.likes.add(request.user)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-# import requests
-# import json
-# def postview(request):
-#     api_request= requests.get(f"https://jsonplaceholder.typicode.com/posts")
-#     try:
-#         api=json.loads(api_request.content)
-#     except:
-#         api="Error"
-#     return render(request,'tuition/postlistapi.html',{'api':api})
-
-
-
-
-
-
-
-
+def addcomment(request):
+    if request.method=="POST":
+        comment=request.POST['comment']
+        parentid=request.POST['parentid']
+        postid=request.POST['postid']
+        post=Post.objects.get(id=postid)
+        if parentid:
+            parent=Comment.objects.get(id=parentid)
+            newcom= Comment(text=comment, user=request.user, post=post, parent=parent)
+            newcom.save()
+        else:
+            newcom= Comment(text=comment, user=request.user, post=post)
+            newcom.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+from .forms import  FileModelForm
+from .models import PostFile
+def addphoto(request, id):
+    post=Post.objects.get(id=id)
+    if request.method=="POST":
+        form=FileModelForm(request.POST, request.FILES)
+        if form.is_valid():
+            image=form.cleaned_data['image']
+            obj=PostFile(image=image, post=post)
+            obj.save()
+            messages.success(request, 'SUccessfully uploaded image')
+            return redirect(f"/tuition/postdetail/{id}/")
+    else:
+        form=FileModelForm()
+    context={
+        'form':form,
+        'id':id
+    }
+    return render(request,'tuition/addphoto.html',context)
