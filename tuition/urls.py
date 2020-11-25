@@ -5,7 +5,7 @@ from .views import (
     subview,ContactView,PostEditView,
     PostCreateView,PostListView,PostDetailView
     )
-
+from .pdf import contact_pdf
 from django.urls import path
 app_name='tuition'
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     # path('contact2/',ContactView.as_view(form_class=ContactFormtwo, template_name="contact2.html"),name="contact2"),
     path('search/',search,name="search"),
     path('filter/',filter,name="filter"),
+    path('pdf/',contact_pdf,name="pdf"),
     path('likepost/<int:id>/',likepost,name="likepost"),
     path('addphoto/<int:id>/',addphoto,name="addphoto"),
     path('addcomment/',addcomment,name="addcomment"),
