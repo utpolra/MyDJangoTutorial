@@ -111,7 +111,6 @@ class PostDetailView(DetailView):
     template_name='tuition/postdetail.html'
     def get_context_data(self,*args, **kwargs):
         self.object.views.add(self.request.user)
-        
         liked=False
         if self.object.likes.filter(id=self.request.user.id).exists():
             liked=True
@@ -188,6 +187,7 @@ def postcreate(request):
         form=PostForm(district_set=District.objects.all().order_by('name'))
     return render(request, 'tuition/postcreate.html',{'form':form})
 from django.http import HttpResponseRedirect
+from notifications.signals import notify
 def likepost(request,id):
     if request.method=="POST":
         post=Post.objects.get(id=id)
@@ -195,6 +195,9 @@ def likepost(request,id):
             post.likes.remove(request.user)
         else:
             post.likes.add(request.user)
+            if request.user != post.user:
+                notify.send(request.user, recipient=post.user, verb="has liked your post" + f''' <a href="/tuition/postdetail/{post.id}/"> Go</a>''')
+
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def addcomment(request):

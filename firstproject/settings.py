@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'session',
     'crispy_forms',
     'multiselectfield',
+    'notifications',
 ]
 
 MIDDLEWARE = [
