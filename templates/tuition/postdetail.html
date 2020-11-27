@@ -65,6 +65,34 @@
 <b>{{comment.user.username}}</b> <span class="badge badge-secondary"> {{comment.created_at | naturaltime}}
 </span>
 <div>{{comment.text}}</div>
+<div>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Delete Comment
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Comment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure to delete your comment?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn "> <a href="/tuition/commentdelete/{{comment.id}}/">Delete</a></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
 <div class="row">
 <form action="/tuition/addcomment/" method="post">
       {% csrf_token %}
@@ -86,6 +114,34 @@
 <b>{{reply.user.username}}</b> <span class="badge badge-secondary"> {{reply.created_at | naturaltime}}
 </span>
 <div>{{reply.text}}</div>
+<div>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{reply.id}}">
+  Delete Reply
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal{{reply.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Comment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure to delete your comment?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn "> <a href="/tuition/commentdelete/{{reply.id}}/">Delete</a></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
 </div>
 </div>
 {% endfor %}

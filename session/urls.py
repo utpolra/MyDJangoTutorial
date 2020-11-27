@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import notification,ownerprofile, loginuser,logoutuser,registration,change_password, activate,userProfile
+from .views import otherprofile,tuitionprofile,notification,ownerprofile, loginuser,logoutuser,registration,change_password, activate,userProfile
 from django.contrib.auth.views import PasswordResetView,PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 
 urlpatterns = [
@@ -9,6 +9,8 @@ urlpatterns = [
     path('ownerprofile/',ownerprofile,name="ownerprofile"),
     path('signup/',registration,name="signup"),
     path('notification/',notification,name="notification"),
+    path('tuitionpro/',tuitionprofile,name="tuitionpro"),
+    path('otherprofile/<str:username>/',otherprofile,name="otherprofile"),
     path('password/',change_password,name="password"),
     path('activate/<uidb64>/<token>/',activate,name="activate"),
 

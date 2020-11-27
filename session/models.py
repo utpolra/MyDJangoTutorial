@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
+from tuition.models import District,Subject,Class_in
+from multiselectfield import MultiSelectField
+
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -43,3 +46,48 @@ class UserProfile(models.Model):
             output_size =(300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+class TuitionProfile(models.Model):
+    STATUS = (
+        ('Available', 'Available'),
+        ('Busy', 'Busy'),
+    )
+    Choice_style = (
+        ('Group_Tuition', 'Group Tuition'),
+        ('Private_Tuition', 'Private Tuition'),
+    )
+    Choice_Place = (
+        ('Class_Rooms', 'Class Rooms'),
+        ('Coaching_Center', 'Coaching Center'),
+        ('Home_Visit', 'Home Visit'),
+        ('My_Place', 'My Place'),
+    )
+    Choice_Approach = (
+        ('Online_Help', 'Online Help'),
+        ('Phone_Help', 'Phone Help'),
+        ('Provide_Hand_Notes', 'Provide Hand_Notes'),
+        ('Video_Tutorials', 'Video Tutorials'),
+    )
+    Choice_Medium = (
+        ('Bangla_Medium', 'Bangla Medium'),
+        ('English_Medium', 'English Medium'),
+        ('Arabic_Medium', 'Arabic Medium'),
+        ('Hindi_Medium', 'Hindi Medium'),
+        ('Sports_Section', 'Sports Section'),
+        ('Singing_Section', 'Singing Section'),
+        ('Dance_Section', 'Dance Section'),
+        ('Extra Curricular Activities', 'Extra Curricular Activities'),
+        ('Language Learning', 'Language Learning'),
+        ('Computer Learning', 'Computer Learning'),
+    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tuitionprofile')
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, related_name='district')
+    style = MultiSelectField(choices=Choice_style, max_choices=3, max_length=100)
+    place = MultiSelectField(choices=Choice_Place,max_choices=3, max_length=100)
+    approach = MultiSelectField(choices=Choice_Approach,max_choices=3, max_length=100)
+    medium = MultiSelectField(choices=Choice_Medium,max_choices=3, max_length=100)
+    subject = models.ManyToManyField(Subject, related_name='subjects')
+    class_in = models.ManyToManyField(Class_in, related_name='classes')
+    salary = models.CharField(max_length=100)
+    days_per_week=models.CharField(max_length=100)
+    education = models.CharField(max_length=100)
+    status = models.CharField(max_length=100, choices=STATUS)

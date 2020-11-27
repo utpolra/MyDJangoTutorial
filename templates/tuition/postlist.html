@@ -1,7 +1,7 @@
 {% extends 'basic.html' %}
 {% block body %}
 <div class="container">
-  <div class="col-md-6">
+  <div class="col-md-6 offset-md-3">
     <h1>Filter Data</h1>
     <form action="/tuition/filter/" method="post">
       {% csrf_token %}
@@ -50,14 +50,31 @@
   </div>
   <h1 class="text-center">All Posts Are given below:</h1>
   {% for p in posts %}
-  <div class="col-md-6 offset-md-2 mb-3 p-3 border">
-    {{p.title}} <br>
-    by {{p.user.username}} <br>
-    <hr>
+  <div class="col-md-8 offset-md-2 mb-3 p-3 border">
 
+  <div class="row  my-2 position-relative">
+  <div class="col d-flex flex-column">
+  <strong class="d-inline-block mb-2">
+  <div>
+<a href="/session/otherprofile/{{p.user.username}}/"> <h3> {% if p.user.get_full_name %}{{p.user.get_full_name}}  {% else %} {{p.user.username}} {% endif %} </h3></a>
+<span class="badge badge-secondary">{{p.created_at}}</span>
 
-    Details: {{p.details_short}}
-    <a href="/tuition/postdetail/{{p.id}}">...Read More</a>
+  </div>
+  -Searching For a teacher 
+  </strong>
+  <div class="preview">
+  for <b> {{p.medium}}</b> medium's Student <br>
+  in {{p.district}} District <br>
+  <b>Salary:</b> {{p.salary}} <br>
+  <p class="card-text">
+  <a href="/tuition/postdetail/{{p.id}}/"> ...Details</a>
+  </p>
+  </div>
+  </div>
+  </div>
+  
+
+    
 
   </div>
 

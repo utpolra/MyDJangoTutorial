@@ -15,3 +15,18 @@ class UserProfileForm(forms.ModelForm):
         model=UserProfile
         # fields='__all__'
         exclude=('user',)
+from .models import TuitionProfile
+class TuitionProfileForm(forms.ModelForm):
+    
+    class Meta:
+        model=TuitionProfile
+        # fields='__all__'
+        exclude=('user',)
+        widgets={
+            'class_in':forms.CheckboxSelectMultiple(attrs={
+                'multiple':True,
+            }),
+            'subject':forms.CheckboxSelectMultiple(attrs={
+                'multiple':True,
+            })
+        }
