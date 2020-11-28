@@ -94,13 +94,15 @@ def contact(request):
         form=ContactForm(initial=initials)
     return render(request,'contact.html',{'form':form})
 from django.views.generic import ListView
+
 class PostListView(ListView):
     template_name='tuition/postlist.html'
     queryset=Post.objects.all()
     context_object_name='posts'
     def get_context_data(self,*args, **kwargs):
         context=super().get_context_data(*args, **kwargs)
-        context['posts']= context.get('object_list')
+        posts=context.get('object_list')
+        context['posts']= posts
         context['subjects']= Subject.objects.all()
         context['classes']= Class_in.objects.all()
         return context
@@ -265,3 +267,9 @@ def addphoto(request, id):
         'id':id
     }
     return render(request,'tuition/addphoto.html',context)
+def apply(request,id):
+    post=Post.objects.get(id=id)
+    notify.send(request.user, recipient=post.user, verb="has applied for your tuition " + f''' <a href="/session/otherprofile/{request.user.username}/">See Profile</a>''')
+    messages.success(request, 'You Have successfully applied for this tuition!')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+

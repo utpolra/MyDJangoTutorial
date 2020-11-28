@@ -1,4 +1,5 @@
-{% extends 'basic.html' %} {% block body %} {% load humanize %}
+{% extends 'basic.html' %}{% block title %} Post Detail
+{% endblock title %} {% block body %} {% load humanize %}
 {% load  tag %}
 <div class="container">
   <h1 class="text-center">Post Detail</h1>
@@ -14,7 +15,8 @@
       <a href="/tuition/edit/{{object.id}}/"> Edit</a> <br />
       <a href="/tuition/addphoto/{{object.id}}/"> Addphoto</a> <br />
       <a href="/tuition/delete/{{object.id}}/">Delete</a> <br />
-      {% endif %} Subject= {{object.get_subject_list}} <br />
+      {% endif %} 
+      Subject= {{object.get_subject_list}} <br />
       Class= {{object.get_class_list}} <br />
       category={{object.category}} <br />
       Salary={{object.salary}} <br />
@@ -39,6 +41,9 @@
 
         {% endif %}
       </form>
+    </div>
+    <div>
+    <Button class="btn "> <a href="/tuition/apply/{{object.id}}/"> Apply for this tuition</a></Button>
     </div>
 
   </div>

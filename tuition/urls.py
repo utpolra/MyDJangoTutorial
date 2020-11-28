@@ -3,7 +3,7 @@ from .views import (
     search,filter,contact,
     postview,postcreate,PostDeleteView, 
     subview,ContactView,PostEditView,
-    PostCreateView,PostListView,PostDetailView,commentdelete
+    PostCreateView,PostListView,PostDetailView,commentdelete,apply
     )
 from .pdf import contact_pdf
 from django.urls import path
@@ -27,5 +27,6 @@ urlpatterns = [
     path('postdetail/<int:pk>/',PostDetailView.as_view(),name="postdetail"),
     path('delete/<int:pk>/',PostDeleteView.as_view(),name="delete"),
     path('edit/<int:pk>/',PostEditView.as_view(),name="edit"),
+    path('apply/<int:id>/',apply,name="apply"),
     # path('create/',PostCreateView.as_view(),name="create"),
 ]
