@@ -141,3 +141,5 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'OTF Team <hmdfahad49@gmail.com>'
 
 django_heroku.settings(locals())
+
+
